@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Result({ data }) {
   return (
     <Link to={"/detail/contact"} state={{ data }}>
-      <div className="border w-full lg:w-[50%] mx-auto py-2 px-2 shadow my-5">
+      <div className="border w-full lg:w-[50%] mx-auto py-2 px-2 shadow my-5 bg-white rounded">
         <div className="flex flex-row space-x-3 items-center justify-around">
           <div>
             <img

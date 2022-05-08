@@ -1,9 +1,10 @@
-import { BiSearch } from "react-icons/bi";
+import { BiLeftArrow, BiSearch } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Searching } from "../store/Actions/SearchAction";
 import Result from "./Result";
 import Defender from "./Helper/Defender";
+import { createPortal } from "react-dom";
 
 function Search() {
   const [state, setState] = useState("");
@@ -25,11 +26,19 @@ function Search() {
     }
   }, [state]);
 
-  return (
+  return createPortal(
     <Defender>
-      <div className="w-full lg:w-[80%]">
-        <div className="w-[80%] mx-auto space-y-5">
-          <div className="w-full sm:w-[80%] space-x-3 mx-auto bg-[#F1F3F4] px-2 py-3 rounded-2xl flex items-center">
+      <div className="w-[100%] min-h-[100vh] flex absolute top-0 bg-[#000000aa] backdrop-blur z-[1000] mx-auto ">
+        <div className="w-[80%] lg:w-[60%] mx-auto space-y-5">
+          <button
+            onClick={() => {
+              window.history.back();
+            }}
+            className="mt-5 px-2 py-2 bg-blue-500 rounded text-white"
+          >
+            <BiLeftArrow />
+          </button>
+          <div className="w-full mt-16 sm:w-[80%] space-x-3 mx-auto bg-[#F1F3F4] px-2 py-3 rounded-2xl flex items-center">
             <BiSearch className="ml-2" />
             <input
               type="text"
@@ -45,7 +54,8 @@ function Search() {
           </div>
         </div>
       </div>
-    </Defender>
+    </Defender>,
+    document.getElementById("model")
   );
 }
 

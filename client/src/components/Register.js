@@ -6,10 +6,12 @@ import animation from "../access/38435-register.json";
 import Lottie from "react-lottie";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 function Register() {
   const [emailV, setEmailV] = useState("");
   const dispatch = useDispatch();
+  const [ani, setAni] = useState(false);
   const [show, setShow] = useState(false);
   const nav = useNavigate();
   const handleSubmit = async (e) => {
@@ -26,7 +28,10 @@ function Register() {
     }
 
     if (res.con) {
-      nav(`/`);
+      setAni(true);
+      setTimeout(() => {
+        nav("/");
+      }, 500);
     }
   };
   const defaultOption = {
@@ -38,22 +43,92 @@ function Register() {
     },
   };
 
+  const left = {
+    hidden: {
+      x: -1000,
+    },
+    visible: {
+      x: 0,
+      transition: {
+        type: "spring",
+        mass: 1,
+      },
+    },
+  };
+
+  const right = {
+    hidden: {
+      x: 1000,
+    },
+    visible: {
+      x: 0,
+      transition: {
+        type: "spring",
+        mass: 1,
+      },
+    },
+  };
+
+  const nonLeft = {
+    hidden: {
+      x: 0,
+    },
+    visible: {
+      x: -1000,
+      transition: {
+        type: "spring",
+        mass: 1,
+      },
+    },
+  };
+
+  const nonRight = {
+    hidden: {
+      x: 0,
+    },
+    visible: {
+      x: 1000,
+      transition: {
+        type: "spring",
+        mass: 1,
+      },
+    },
+  };
+
   return (
     <div className="w-full min-h-[100vh]">
       <div className="grid grid-cols-12 min-h-[100vh]">
-        <div className="col-span-6 hidden lg:block bg-violet-400 py-[9%] xl:py-[15%] 2xl:py-[20%]">
+        <motion.div
+          variants={ani ? nonLeft : left}
+          animate="visible"
+          initial="hidden"
+          className="col-span-6 hidden lg:block bg-violet-400 py-[9%] xl:py-[15%] 2xl:py-[20%]"
+        >
           <Lottie options={defaultOption} width="500px" height="500px" />
-        </div>
-        <div className="col-span-12 lg:col-span-6">
+        </motion.div>
+        <motion.div
+          variants={ani ? nonRight : right}
+          animate="visible"
+          initial="hidden"
+          className="col-span-12 lg:col-span-6"
+        >
           <div className="w-[90%] md:w-[60%] lg:w-[80%] 2xl:w-[50%] mx-auto lg:py-[9%] py-[15%] lg:py-0 xl:py-[20%]">
             <h1 className="font-['Lato'] text-5xl font-semibold">
               Get's Start
             </h1>
             <p className=" text-gray-400 my-5">
               Already have an Account ??
-              <Link to={"/"}>
-                <span className="text-violet-500"> Login</span>
-              </Link>
+              <button
+                onClick={() => {
+                  setAni(true);
+                  setTimeout(() => {
+                    nav("/");
+                  }, 500);
+                }}
+                className="text-violet-500 ml-1"
+              >
+                Login
+              </button>
             </p>
             <form className="space-y-8" onSubmit={handleSubmit} id="form">
               <div>
@@ -131,7 +206,7 @@ function Register() {
               <div className="clear-both" />
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

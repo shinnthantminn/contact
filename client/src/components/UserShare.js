@@ -4,6 +4,8 @@ import Defender from "./Helper/Defender";
 import { useDispatch, useSelector } from "react-redux";
 import { NonSelection } from "../store/Actions/SelectorAction";
 import { Add } from "../store/Actions/DataAction";
+import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 
 function UserShare() {
   const { state } = useLocation();
@@ -15,6 +17,7 @@ function UserShare() {
   const nav = useNavigate();
   const select = useSelector((state) => state.Select);
   const [err, setErr] = useState("");
+  const [ani, setAni] = useState(false);
   const dispatch = useDispatch();
 
   const send = async (item, owner, multi) => {
@@ -74,10 +77,45 @@ function UserShare() {
     fetchingData();
   };
 
-  return (
+  const form = {
+    hidden: {
+      y: -1000,
+    },
+    visible: {
+      x: 0,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        type: "spring",
+        damping: 12,
+      },
+    },
+  };
+
+  const formClose = {
+    hidden: {
+      y: 0,
+    },
+    visible: {
+      x: 0,
+      y: -1000,
+      transition: {
+        duration: 0.5,
+        type: "spring",
+        damping: 12,
+      },
+    },
+  };
+
+  return createPortal(
     <Defender>
-      <div className="lg:w-[80%] mx-auto ">
-        <div className="w-[400px] pb-6 space-y-10 mx-auto px-5 py-2 border shadow">
+      <div className="w-[100%] min-h-[100vh] flex items-center absolute top-0 bg-[#000000aa] backdrop-blur z-[1000] mx-auto ">
+        <motion.div
+          className="w-[400px] bg-[#DAE1EF] rounded pb-6 space-y-10 mx-auto px-5 py-2 border shadow"
+          variants={ani ? formClose : form}
+          initial="hidden"
+          animate="visible"
+        >
           <h1 className="text-center text-2xl font-semibold">Share</h1>
           <form className="space-y-8" id="form" onSubmit={handleSubmit}>
             <div>
@@ -101,18 +139,23 @@ function UserShare() {
               <input
                 type="submit"
                 value={"Cancel"}
-                className="px-2 py-2 bg-red-500 text-white rounded float-right"
+                className="px-2 py-2 bg-red-500 cursor-pointer text-white rounded float-right"
                 onClick={(e) => {
                   e.preventDefault();
                   document.getElementById("form").reset();
+                  setAni(true);
+                  setTimeout(() => {
+                    window.history.back();
+                  }, 400);
                 }}
               />
             </div>
             <div className="clear-both" />
           </form>
-        </div>
+        </motion.div>
       </div>
-    </Defender>
+    </Defender>,
+    document.getElementById("model")
   );
 }
 

@@ -6,10 +6,13 @@ import { FaStickyNote, FaUser } from "react-icons/fa";
 import { AiFillPhone, AiTwotoneMail } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import Defender from "./Helper/Defender";
+import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 
 function EditContact() {
   const { state } = useLocation();
   const user = useSelector((state) => state.Login);
+  const [ani, setAni] = useState(false);
   const [first, setFirst] = useState(state.data.FirstName);
   const [last, setLast] = useState(state.data.LastName);
   const [email, setEmail] = useState(state.data.email);
@@ -57,7 +60,10 @@ function EditContact() {
       setPhone(res.msg);
     }
     if (res.con) {
-      nav("/contact");
+      setAni(true);
+      setTimeout(() => {
+        window.history.back();
+      }, 400);
     }
   };
 
@@ -82,79 +88,123 @@ function EditContact() {
     );
     reader.readAsDataURL(e.target.files[0]);
   };
-  return (
+
+  const form = {
+    hidden: {
+      y: -1000,
+    },
+    visible: {
+      x: 0,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        type: "spring",
+        damping: 12,
+      },
+    },
+  };
+
+  const formClose = {
+    hidden: {
+      y: 0,
+    },
+    visible: {
+      x: 0,
+      y: -1000,
+      transition: {
+        duration: 0.5,
+        type: "spring",
+        damping: 12,
+      },
+    },
+  };
+
+  return createPortal(
     <Defender>
-      <div className="w-[80%] mx-auto pb-20">
-        <div className="w-[100%] lg:w-[50%] mx-auto">
-          <h1 className="text-2xl mb-10 font-semibold">Edit Contact</h1>
+      <div className="w-[100%] min-h-[100vh] flex items-center absolute top-0 bg-[#000000aa] backdrop-blur z-[1000] mx-auto ">
+        <motion.div
+          variants={ani ? formClose : form}
+          initial="hidden"
+          animate="visible"
+          className="rounded sm:w-fit px-2 py-3 2xl:px-3 2xl:py-5 mx-auto bg-white shadow border bg-[#DAE1EF] flex flex-col"
+        >
+          <h1 className="font-semibold font-['lato'] text-2xl">Edit Contact</h1>
           <div>
-            <div className="w-[50%] rounded-[100%] mx-auto mb-10">
-              <img src={photo} alt="img" className="rounded-[100%]" />
+            <div className="w-full md:w-[50%] rounded-[100%] mx-auto my-3">
+              <img
+                src={photo}
+                alt="img"
+                onClick={() => {
+                  document.getElementById("file").click();
+                }}
+                className="rounded-[100%] mx-auto object-contain w-[200px] h-[200px] cursor-pointer"
+              />
             </div>
 
-            <form onSubmit={handleSubmit} id="form" className="space-y-10">
-              <div>
+            <form onSubmit={handleSubmit} id="form" className="space-y-3">
+              <div className="hidden">
                 <div className="flex items-center mb-3">
                   <BiImageAdd />
                   <label htmlFor="file">Image</label>
                 </div>
-                <input type="file" name="file" onChange={handleFile} />
+                <input
+                  type="file"
+                  name="file"
+                  id="file"
+                  onChange={handleFile}
+                />
               </div>
-              <div className="space-y-3 mt-6">
-                <div className="flex items-center">
-                  <FaUser />
-                  <label htmlFor="name">Name</label>
-                </div>
-                <div className="space-y-8">
-                  <input
-                    type="text"
-                    name="FirstName"
-                    value={first}
-                    onChange={(e) => setFirst(e.target.value)}
-                    className={
-                      firstName == ""
-                        ? "broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                        : "broder border-b border-red-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                    }
-                    placeholder="First Name"
-                  />
-                  {firstName !== "" && (
-                    <p className="text-red-600 text-sm">{firstName}</p>
-                  )}
-                  <input
-                    type="text"
-                    name="LastName"
-                    value={last}
-                    onChange={(e) => setLast(e.target.value)}
-                    className={
-                      lastName == ""
-                        ? "broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                        : "broder border-b border-red-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                    }
-                    placeholder="Last Name"
-                  />
-                  {lastName !== "" && (
-                    <p className="text-red-600 text-sm">{lastName}</p>
-                  )}
+
+              <div className="">
+                <label htmlFor="name">Enter Name</label>
+                <div className="flex flex-wrap space-y-5 sm:space-y-0 sm:space-x-3">
+                  <div className="w-full sm:w-fit">
+                    <input
+                      type="text"
+                      name="FirstName"
+                      className="px-2 py-2 w-full  outline-0 border border-gray-300 rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
+                      value={first}
+                      onChange={(e) => setFirst(e.target.value)}
+                      placeholder="First Name"
+                    />
+                    {firstName !== "" && (
+                      <p className="text-red-600 text-sm">{firstName}</p>
+                    )}
+                  </div>
+                  <div className="w-full sm:w-fit">
+                    <input
+                      type="text"
+                      name="LastName"
+                      className="px-2 py-2 w-full  outline-0 border border-gray-300 rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Last Name"
+                      value={last}
+                      onChange={(e) => setLast(e.target.value)}
+                    />
+                    {lastName !== "" && (
+                      <p className="text-red-600 text-sm">{lastName}</p>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="space-y-3 mt-6">
+
+              <div className="">
                 <div className="flex items-center">
                   <AiTwotoneMail />
                   <label htmlFor="name">Email</label>
                 </div>
-                <div className="space-y-5">
+                <div className="">
                   <input
                     type="Email"
                     name="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
+                    className="form rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Email"
                   />
                 </div>
               </div>
-              <div className="space-y-3 mt-6">
+
+              <div className="">
                 <div className="flex items-center">
                   <AiFillPhone />
                   <label htmlFor="name">Phone</label>
@@ -165,42 +215,47 @@ function EditContact() {
                     name="phone"
                     value={phNo}
                     onChange={(e) => setPhNo(e.target.value)}
-                    className={
-                      phone == ""
-                        ? "broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                        : "broder border-b border-red-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                    }
-                    placeholder="phone"
+                    className="form rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Phone"
                   />
                   {phone !== "" && (
                     <p className="text-red-600 text-sm">{phone}</p>
                   )}
                 </div>
               </div>
-              <div className="space-y-3 mt-6">
+
+              <div className="">
                 <div className="flex items-center">
                   <FaStickyNote />
                   <label htmlFor="name">Note</label>
                 </div>
                 <div className="space-y-5">
-                  <input
+                  <textarea
                     type="text"
                     name="Note"
-                    className="broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                    placeholder="Note"
+                    cols="3"
+                    rows="5"
+                    className="form duration-300 focus:ring-blue-500 focus:border-blue-500"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
+                    placeholder="Note"
                   />
                 </div>
               </div>
-              <div className="mt-10 space-x-3">
+
+              <div className=" space-x-3 float-right pt-5 pb-2">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
                     document.getElementById("form").reset();
+                    setSrc("");
                     setFirstName("");
                     setLastName("");
                     setPhone("");
+                    setAni(true);
+                    setTimeout(() => {
+                      window.history.back();
+                    }, 400);
                   }}
                   className="px-2 py-2 text-white bg-red-500 rounded shadow duration-300 hover:shadow-xl"
                 >
@@ -212,9 +267,10 @@ function EditContact() {
               </div>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </Defender>
+    </Defender>,
+    document.getElementById("model")
   );
 }
 

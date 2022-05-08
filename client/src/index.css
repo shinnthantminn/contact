@@ -4,6 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .card {
   @apply items-center text-white rounded-3xl bg-blue-500 w-[80%] px-5 py-2 cursor-pointer hidden lg:flex;
 }
@@ -14,4 +25,8 @@
 
 .LabelText {
   @apply block text-lg;
+}
+
+.form {
+  @apply border border-gray-300 px-2 py-2 outline-0 w-full;
 }

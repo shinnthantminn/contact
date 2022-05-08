@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Defender from "./Helper/Defender";
 import { createPortal } from "react-dom";
-
+import { motion } from "framer-motion"
 function AddContact() {
   const nav = useNavigate();
 
@@ -16,6 +16,7 @@ function AddContact() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [src, setSrc] = useState("");
+  const [ani, setAni] = useState(false);
   const user = useSelector((state) => state.Login);
 
   const handleSubmit = async (e) => {
@@ -50,7 +51,10 @@ function AddContact() {
       setPhone(res.msg);
     }
     if (res.con) {
-      nav("/contact");
+      setAni(true);
+      setTimeout(() => {
+        window.history.back();
+      }, 400);
     }
   };
 
@@ -65,77 +69,116 @@ function AddContact() {
     );
     reader.readAsDataURL(e.target.files[0]);
   };
+
+  const form = {
+    hidden: {
+      y: -1000,
+    },
+    visible: {
+      x: 0,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        type: "spring",
+        damping: 12,
+      },
+    },
+  };
+
+  const formClose = {
+    hidden: {
+      y: 0,
+    },
+    visible: {
+      x: 0,
+      y: -1000,
+      transition: {
+        duration: 0.5,
+        type: "spring",
+        damping: 12,
+      },
+    },
+  };
+
   return createPortal(
     <Defender>
-      <div className="w-[100%] min-h-[100vh] absolute top-0 bg-[#0000000aa] z-[1000] mx-auto ">
-        <div className="w-[50%] mx-auto bg-white shadow border flex items-center flex-col">
-          <h1 className="text-2xl mb-10 font-semibold">Add Contact</h1>
+      <div className="w-[100%] min-h-[100vh] flex items-center absolute top-0 bg-[#000000aa] backdrop-blur z-[1000] mx-auto ">
+        <motion.div
+          variants={ani ? formClose : form}
+          initial="hidden"
+          animate="visible"
+          className="rounded w-full sm:w-fit px-2 py-3 2xl:px-3 2xl:py-5 mx-auto bg-white shadow border bg-[#DAE1EF] flex flex-col"
+        >
+          <h1 className="font-semibold font-['lato'] text-2xl">Add Contact</h1>
           <div>
-            <div className="w-full md:w-[50%] rounded-[100%] mx-auto mb-10">
+            <div className="w-full md:w-[50%] rounded-[100%] mx-auto my-3">
               <img
                 src={src === "" ? User : src}
                 alt="img"
-                className="rounded object-contain w-[70%] "
+                className="rounded-[100%] mx-auto object-contain w-[200px] h-[200px] cursor-pointer"
+                onClick={() => {
+                  document.getElementById("file").click();
+                }}
               />
             </div>
 
-            <form onSubmit={handleSubmit} id="form" className="space-y-10">
-              <div>
-                <div className="flex items-center mb-3">
+            <form onSubmit={handleSubmit} id="form" className="space-y-3">
+              <div className="hidden">
+                <div className="flex items-center">
                   <BiImageAdd />
                   <label htmlFor="file">Image</label>
                 </div>
-                <input type="file" name="file" onChange={handleFile} />
+                <input
+                  type="file"
+                  name="file"
+                  id="file"
+                  onChange={handleFile}
+                />
               </div>
-              <div className="space-y-3 mt-6">
-                <div className="flex items-center">
-                  <FaUser />
-                  <label htmlFor="name">Name</label>
-                </div>
-                <div className="space-y-8">
-                  <input
-                    type="text"
-                    name="FirstName"
-                    className={
-                      firstName == ""
-                        ? "broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                        : "broder border-b border-red-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                    }
-                    placeholder="First Name"
-                  />
-                  {firstName !== "" && (
-                    <p className="text-red-600 text-sm">{firstName}</p>
-                  )}
-                  <input
-                    type="text"
-                    name="LastName"
-                    className={
-                      lastName == ""
-                        ? "broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                        : "broder border-b border-red-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                    }
-                    placeholder="Last Name"
-                  />
-                  {lastName !== "" && (
-                    <p className="text-red-600 text-sm">{lastName}</p>
-                  )}
+
+              {/*name*/}
+              <div className="">
+                <label htmlFor="name">Enter Name</label>
+                <div className="flex flex-wrap space-y-5 sm:space-y-0 sm:space-x-3">
+                  <div className="w-full sm:w-fit">
+                    <input
+                      type="text"
+                      name="FirstName"
+                      className="px-2 py-2 w-full  outline-0 border border-gray-300 rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="First Name"
+                    />
+                    {firstName !== "" && (
+                      <p className="text-red-600 text-sm">{firstName}</p>
+                    )}
+                  </div>
+                  <div className="w-full sm:w-fit">
+                    <input
+                      type="text"
+                      name="LastName"
+                      className="px-2 py-2 w-full  outline-0 border border-gray-300 rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Last Name"
+                    />
+                    {lastName !== "" && (
+                      <p className="text-red-600 text-sm">{lastName}</p>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="space-y-3 mt-6">
+              <div className="">
                 <div className="flex items-center">
                   <AiTwotoneMail />
                   <label htmlFor="name">Email</label>
                 </div>
-                <div className="space-y-5">
+                <div className="">
                   <input
                     type="Email"
                     name="email"
-                    className="broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
+                    className="form rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Email"
                   />
                 </div>
               </div>
-              <div className="space-y-3 mt-6">
+              <div className="">
                 <div className="flex items-center">
                   <AiFillPhone />
                   <label htmlFor="name">Phone</label>
@@ -144,33 +187,31 @@ function AddContact() {
                   <input
                     type="number"
                     name="phone"
-                    className={
-                      phone == ""
-                        ? "broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                        : "broder border-b border-red-500 w-[100%] lg:w-[80%] outline-0 px-2"
-                    }
-                    placeholder="phone"
+                    className="form rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Phone"
                   />
                   {phone !== "" && (
                     <p className="text-red-600 text-sm">{phone}</p>
                   )}
                 </div>
               </div>
-              <div className="space-y-3 mt-6">
+              <div className="">
                 <div className="flex items-center">
                   <FaStickyNote />
                   <label htmlFor="name">Note</label>
                 </div>
                 <div className="space-y-5">
-                  <input
+                  <textarea
                     type="text"
                     name="Note"
-                    className="broder border-b border-gray-500 w-[100%] lg:w-[80%] outline-0 px-2"
+                    cols="3"
+                    rows="5"
+                    className="form duration-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Note"
                   />
                 </div>
               </div>
-              <div className="mt-10 space-x-3">
+              <div className=" space-x-3 float-right pt-5 pb-2">
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -179,6 +220,10 @@ function AddContact() {
                     setFirstName("");
                     setLastName("");
                     setPhone("");
+                    setAni(true);
+                    setTimeout(() => {
+                      window.history.back();
+                    }, 400);
                   }}
                   className="px-2 py-2 text-white bg-red-500 rounded shadow duration-300 hover:shadow-xl"
                 >
@@ -190,7 +235,7 @@ function AddContact() {
               </div>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
     </Defender>,
     document.getElementById("model")
