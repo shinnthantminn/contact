@@ -40,10 +40,15 @@ module.exports = {
       if (req.headers.authorization) {
         const token = req.headers.authorization.split(" ")[1];
         const data = await helper.decode(token);
-        const raw = await helper.get(data._id);
-        const user = JSON.parse(raw);
-        req.body.user = user._id;
-        next();
+        if (data) {
+          console.log(data, process.env.KEY);
+          const raw = await helper.get(data._id);
+          const user = JSON.parse(raw);
+          req.body.user = user._id;
+          next();
+        } else {
+          next(new Error("authorization error"));
+        }
       } else next(new Error("tokenization error"));
     };
   },

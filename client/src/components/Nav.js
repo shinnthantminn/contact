@@ -4,16 +4,39 @@ import { useDispatch, useSelector } from "react-redux";
 import { Toggle } from "../store/Actions/ToggleAction";
 import { BiSearch } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function Nav() {
   const dispatch = useDispatch();
+  const [data, setData] = useState(null);
+  const [exp, setExp] = useState(false);
+  const toggle = useSelector((state) => state.Toggle);
+  const isTokenExpired = (token) =>
+    Date.now() >= JSON.parse(atob(token.split(".")[1])).exp * 1000;
   const user = useSelector((state) => state.Login);
 
   const handleMenu = () => {
     dispatch(Toggle());
   };
 
-  if (user.length === 0) {
+  const fun = async () => {
+    const info = await JSON.parse(sessionStorage.getItem("token"));
+    if (info === null) {
+      await setData(null);
+    } else {
+      const check = isTokenExpired(info.token);
+      if (check) {
+        await setExp(true);
+      }
+      await setData(info);
+    }
+  };
+
+  useEffect(() => {
+    fun();
+  }, [toggle]);
+
+  if (exp || data === null) {
     return <div />;
   } else
     return (

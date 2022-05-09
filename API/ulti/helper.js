@@ -16,7 +16,10 @@ module.exports = {
     jwt.sign(payload, process.env.KEY, {
       expiresIn: "1h",
     }),
-  decode: (payload) => jwt.decode(payload, process.env.KEY),
+  decode: (payload) =>
+    jwt.verify(payload, process.env.KEY, (err, decode) => {
+      return decode;
+    }),
   set: (id, value) => redis.set(id.toString(), JSON.stringify(value)),
   get: (id) => redis.get(id.toString()),
   del: (id) => redis.del(id.toString()),

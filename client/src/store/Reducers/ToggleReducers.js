@@ -1,4 +1,4 @@
-const ToggleReducers = (state = true, action) => {
+const ToggleReducers = (state = false, action) => {
   switch (action.type) {
     case "toggle":
       return (state = !state);

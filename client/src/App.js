@@ -10,8 +10,12 @@ import Trash from "./components/Trash";
 import User from "./components/User";
 import Register from "./components/Register";
 import UserShare from "./components/UserShare";
+import { useSelector } from "react-redux";
 
 function App() {
+  const isTokenExpired = (token) =>
+    Date.now() >= JSON.parse(atob(token.split(".")[1])).exp * 1000;
+
   return (
     <div className="w-[100%] mx-auto font-['Montserrat']">
       <Router>

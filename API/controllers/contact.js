@@ -12,7 +12,6 @@ module.exports = {
     const obj = {};
     obj["user"] = req.body.user;
     const finder = await DB.find(obj).populate("user");
-    console.log(finder);
     helper.fMsg(res, "patch complete", finder);
   },
   get: async (req, res, next) => {
@@ -25,7 +24,6 @@ module.exports = {
     const finder = await DB.findById(req.params.id);
     if (finder) {
       if (req.body.image) {
-        console.log("hello");
         await fs.unlinkSync(`./upload/${finder.image}`);
       }
       await DB.findByIdAndUpdate(finder._id, req.body);
@@ -43,8 +41,7 @@ module.exports = {
       const obj = {};
       obj["user"] = req.body.user;
       const finder = await DB.find(obj);
-      console.log(finder);
-      helper.fMsg(res, "patch complete", finder);
+      helper.fMsg(res, "delete complete", finder);
     } else next(new Error("no contact with that id"));
   },
   search: async (req, res, next) => {
@@ -65,8 +62,7 @@ module.exports = {
       req.body.user = req.body.owner;
     }
     const result = await DB.findById(req.params.id);
-    console.log(result);
-    console.log(req.body);
+
     if (result) {
       await DB.findByIdAndUpdate(result._id, req.body);
       const obj = {};

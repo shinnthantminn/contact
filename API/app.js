@@ -3,12 +3,14 @@ const express = require("express"),
   app = express(),
   mongoose = require("mongoose"),
   fileUpload = require("express-fileupload"),
-  cors = require("cors");
+  cors = require("cors"),
+  cookieParser = require("cookie-parser");
 
 const path = require("path");
 
 mongoose.connect(`mongodb://127.0.0.1:27017/${process.env.DB_NAME}`);
 
+app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
@@ -23,7 +25,7 @@ app.use("/api/v0/user", userRouter);
 
 app.get("*", (req, res, next) => {
   res.status(200).json({
-    msg: "this route no avaliable",
+    msg: "this route no available",
   });
 });
 

@@ -7,6 +7,8 @@ import animation from "../access/95530-password.json";
 import { FaEnvelope, FaEye, FaLock } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
+import Cookie from "js-cookie";
+import { Toggle } from "../store/Actions/ToggleAction";
 
 function User() {
   const [emailV, setEmailV] = useState("");
@@ -38,6 +40,7 @@ function User() {
       setAni(true);
       setTimeout(() => {
         dispatch(Loginer(res.result));
+        dispatch(Toggle());
         nav(`/contact`);
       }, 500);
     }

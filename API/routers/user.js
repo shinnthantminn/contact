@@ -27,6 +27,8 @@ router.post("/register", [
   controller.register,
 ]);
 
+router.post("/auth", controller.auth);
+
 router.post("/byEmail", controller.searchByEmail);
 
 module.exports = router;

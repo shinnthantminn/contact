@@ -1,6 +1,7 @@
 const DB = require("../models/user");
 const helper = require("../ulti/helper");
 const { token } = require("../ulti/helper");
+const cookieParser = require("cookie-parser");
 
 module.exports = {
   all: async (req, res, next) => {
@@ -23,6 +24,8 @@ module.exports = {
         delete obj.password;
         obj.token = token(obj);
         helper.set(obj._id, obj);
+        res.cookie("token", obj.token);
+        console.log(req.cookies);
         helper.fMsg(res, "login success", obj);
       } else next(new Error("password wrong"));
     } else next(new Error("this email was not existing in our server"));
@@ -38,5 +41,8 @@ module.exports = {
   searchByEmail: async (req, res, next) => {
     const finder = await DB.find({ email: req.body.email });
     helper.fMsg(res, "search by user", finder);
+  },
+  auth: async (req, res, next) => {
+    console.log(req.cookies);
   },
 };

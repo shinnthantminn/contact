@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const contactSchema = new Schema({
-  image: { type: String },
+  image: String,
   user: { type: Schema.Types.ObjectId, ref: "user" },
   FirstName: { type: String, required: true },
   LastName: { type: String, required: true },
