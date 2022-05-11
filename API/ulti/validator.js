@@ -41,7 +41,6 @@ module.exports = {
         const token = req.headers.authorization.split(" ")[1];
         const data = await helper.decode(token);
         if (data) {
-          console.log(data, process.env.KEY);
           const raw = await helper.get(data._id);
           const user = JSON.parse(raw);
           req.body.user = user._id;

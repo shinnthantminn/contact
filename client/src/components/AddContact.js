@@ -1,6 +1,6 @@
 import User from "../access/userLogo.png";
 import { BiImageAdd } from "react-icons/bi";
-import { FaStickyNote, FaUser } from "react-icons/fa";
+import { FaMinus, FaPlus, FaStickyNote, FaUser } from "react-icons/fa";
 import { AiFillPhone, AiTwotoneMail } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Add } from "../store/Actions/DataAction";
@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Defender from "./Helper/Defender";
 import { createPortal } from "react-dom";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+import { v4 as uuid } from "uuid";
 function AddContact() {
   const nav = useNavigate();
 
@@ -18,6 +19,7 @@ function AddContact() {
   const [src, setSrc] = useState("");
   const [ani, setAni] = useState(false);
   const user = useSelector((state) => state.Login);
+  const [count, setCount] = useState([{ id: 1 }]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +32,7 @@ function AddContact() {
       body: form,
     });
     const res = await result.json();
-    console.log(res.msg);
+    console.log(res);
     setFirstName("");
     setLastName("");
     setPhone("");
@@ -98,6 +100,16 @@ function AddContact() {
         damping: 12,
       },
     },
+  };
+
+  const handleAddPhone = (e) => {
+    e.preventDefault();
+    const obj = { id: uuid() };
+    setCount((prevState) => [...prevState, obj]);
+  };
+
+  const handleRemovePhone = (e) => {
+    setCount((prevState) => prevState.filter((i) => i.id !== e));
   };
 
   return createPortal(
@@ -178,23 +190,40 @@ function AddContact() {
                   />
                 </div>
               </div>
-              <div className="">
-                <div className="flex items-center">
-                  <AiFillPhone />
-                  <label htmlFor="name">Phone</label>
+              {count.map((i, inx) => (
+                <div key={inx}>
+                  <div className="flex items-center">
+                    <AiFillPhone />
+                    <label htmlFor="name">Phone {inx + 1}</label>
+                  </div>
+                  <div className="space-y-5">
+                    <div className="flex justify-between form rounded duration-300 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                      <input
+                        type="number"
+                        name={`phone ${inx + 1}`}
+                        className=" outline-0"
+                        placeholder={`phone ${inx + 1}`}
+                      />
+                      <div className="space-x-3">
+                        <button onClick={handleAddPhone}>
+                          <FaPlus />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleRemovePhone(i.id);
+                          }}
+                        >
+                          <FaMinus />
+                        </button>
+                      </div>
+                    </div>
+                    {phone !== "" && (
+                      <p className="text-red-600 text-sm">{phone}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="space-y-5">
-                  <input
-                    type="number"
-                    name="phone"
-                    className="form rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Phone"
-                  />
-                  {phone !== "" && (
-                    <p className="text-red-600 text-sm">{phone}</p>
-                  )}
-                </div>
-              </div>
+              ))}
               <div className="">
                 <div className="flex items-center">
                   <FaStickyNote />

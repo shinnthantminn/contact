@@ -11,6 +11,7 @@ import User from "./components/User";
 import Register from "./components/Register";
 import UserShare from "./components/UserShare";
 import { useSelector } from "react-redux";
+import Copy from "./components/Copy";
 
 function App() {
   const isTokenExpired = (token) =>
@@ -31,6 +32,7 @@ function App() {
             <Route path={"search"} element={<Search />} />
             <Route path={"trash/"} element={<Trash />} />
             <Route path={"share"} element={<UserShare />} />
+            <Route path={"copy"} element={<Copy />} />
           </Route>
         </Routes>
       </Router>

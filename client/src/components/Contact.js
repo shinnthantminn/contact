@@ -10,7 +10,6 @@ function Contact() {
   const dispatch = useDispatch();
   const Data = useSelector((state) => state.Data);
   const user = useSelector((state) => state.Login);
-  console.log(user);
   const handleFetch = async () => {
     const data = await fetch(`http://127.0.0.1:5000/api/v0/contact/byUser`, {
       method: "GET",

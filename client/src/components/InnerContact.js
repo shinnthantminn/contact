@@ -75,7 +75,7 @@ function InnerContact({ data }) {
           <div className="hidden md:block md:col-span-4 lg:col-span-2">
             <div>
               <h1>Phone</h1>
-              <p>{data.phone}</p>
+              <p>{data.phone[0]}</p>
             </div>
           </div>
           <div className="hidden lg:block col-span-4">
@@ -154,7 +154,23 @@ function InnerContact({ data }) {
                             "block px-4 py-2 text-sm"
                           )}
                         >
-                          Share
+                          send
+                        </div>
+                      </Link>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <Link to={"/copy"} state={{ data }}>
+                        <div
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                        >
+                          share
                         </div>
                       </Link>
                     )}

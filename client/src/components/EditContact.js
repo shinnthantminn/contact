@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import User from "../access/userLogo.png";
 import { BiImageAdd } from "react-icons/bi";
-import { FaStickyNote, FaUser } from "react-icons/fa";
+import { FaMinus, FaPlus, FaStickyNote, FaUser } from "react-icons/fa";
 import { AiFillPhone, AiTwotoneMail } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import Defender from "./Helper/Defender";
@@ -17,7 +17,7 @@ function EditContact() {
   const [last, setLast] = useState(state.data.LastName);
   const [email, setEmail] = useState(state.data.email);
   const [note, setNote] = useState(state.data.Note);
-  const [phNo, setPhNo] = useState(state.data.phone);
+  const [phNo, setPhNo] = useState(state.data.phone.map((i) => i));
   const [src, setSrc] = useState("");
   const [photo, setPhoto] = useState("");
   const nav = useNavigate();
@@ -119,6 +119,18 @@ function EditContact() {
     },
   };
 
+  const handlePlus = (e) => {
+    e.preventDefault();
+    setPhNo((prevState) => [...prevState, ""]);
+  };
+
+  const handleMinus = (e) => {
+    if (phNo.length === 1) {
+      alert("u r idiot ?? that is contact app no porn site =-(");
+      return;
+    }
+    setPhNo((prevState) => prevState.filter((i) => i !== e));
+  };
   return createPortal(
     <Defender>
       <div className="w-[100%] min-h-[100vh] flex items-center absolute top-0 bg-[#000000aa] backdrop-blur z-[1000] mx-auto ">
@@ -204,25 +216,48 @@ function EditContact() {
                 </div>
               </div>
 
-              <div className="">
-                <div className="flex items-center">
-                  <AiFillPhone />
-                  <label htmlFor="name">Phone</label>
+              {phNo.map((i, inx) => (
+                <div className="" key={inx}>
+                  <div className="flex items-center">
+                    <AiFillPhone />
+                    <label htmlFor="name">Phone {inx + 1}</label>
+                  </div>
+                  <div className="space-y-5">
+                    <div className="flex justify-between form rounded duration-300 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                      <input
+                        type="number"
+                        name={`phone ${inx + 1}`}
+                        className=" outline-0"
+                        value={i}
+                        onChange={(e) =>
+                          setPhNo((prevState) =>
+                            prevState.map((x) =>
+                              x === i ? (x = e.target.value) : x
+                            )
+                          )
+                        }
+                        placeholder={`phone ${inx + 1}`}
+                      />
+                      <div className="space-x-3">
+                        <button onClick={handlePlus}>
+                          <FaPlus />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleMinus(i);
+                          }}
+                        >
+                          <FaMinus />
+                        </button>
+                      </div>
+                    </div>
+                    {phone !== "" && (
+                      <p className="text-red-600 text-sm">{phone}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="space-y-5">
-                  <input
-                    type="number"
-                    name="phone"
-                    value={phNo}
-                    onChange={(e) => setPhNo(e.target.value)}
-                    className="form rounded duration-300 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Phone"
-                  />
-                  {phone !== "" && (
-                    <p className="text-red-600 text-sm">{phone}</p>
-                  )}
-                </div>
-              </div>
+              ))}
 
               <div className="">
                 <div className="flex items-center">

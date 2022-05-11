@@ -85,7 +85,7 @@ function InnerTrash({ data }) {
       <div className="hidden md:block md:col-span-4 lg:col-span-2">
         <div>
           <h1>Phone</h1>
-          <p>{data.phone}</p>
+          <p>{data.phone[0]}</p>
         </div>
       </div>
       <div className="hidden lg:block col-span-4">

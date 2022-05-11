@@ -44,10 +44,12 @@ function DetailContacts() {
         </div>
         <div className="w-full border rounded px-3 py-5 mt-5 rounded shadow">
           <p className="font-semibold">contact details</p>
-          <div className="flex space-x-3 mt-2">
-            <BsTelephoneFill />
-            <p className="text-blue-500">{state.data.phone}</p>
-          </div>
+          {state.data.phone.map((i) => (
+            <div className="flex space-x-3 mt-3" key={i}>
+              <BsTelephoneFill />
+              <p className="text-blue-500">{i}</p>
+            </div>
+          ))}
         </div>
         {state.data.Note && (
           <div className="w-full border rounded px-3 py-5 mt-5 rounded shadow">

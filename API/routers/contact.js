@@ -8,6 +8,7 @@ const {
 } = require("../ulti/validator");
 const { images } = require("../ulti/ImageTransfer");
 const { schemaBody, schemaParams } = require("../ulti/joiSchema");
+const { multiPhoneWare, pendingWare } = require("../ulti/middleware");
 const DB = require("../models/contact");
 
 router
@@ -15,6 +16,7 @@ router
   .get(controller.all)
   .post(
     validateToken(),
+    multiPhoneWare,
     validateUnique(DB, "phone"),
     validateBody(schemaBody.contact.body),
     images,
@@ -25,6 +27,7 @@ router.route("/byUser").get(validateToken(), controller.byUser);
 router
   .route("/byUser/:id")
   .patch(
+    pendingWare,
     validateToken(),
     validateParams(schemaParams.id, "id"),
     controller.byUserSoftDrop
@@ -35,6 +38,7 @@ router
   .get(validateParams(schemaParams.id, "id"), controller.get)
   .put(
     validateToken(),
+    multiPhoneWare,
     images,
     validateParams(schemaParams.id, "id"),
     validateBody(schemaBody.contact.patch),
